@@ -11,7 +11,7 @@ function Home() {
         overflowX: "hidden",
       }}
     >
-      <h1>*Me creating the webpage*</h1>
+      <h1>*Me, creating the webpage*</h1>
       <script
         src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"
         type="module"
