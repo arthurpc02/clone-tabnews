@@ -1,3 +1,3 @@
 # clone-tabnews
 
-Clone no TabNews, utilizado no curso.dev
+Clone do TabNews, utilizado no curso.dev
