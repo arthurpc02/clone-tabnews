@@ -8,7 +8,8 @@
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "up:dbms": "docker compose -f infra/compose.yaml up"
   },
   "author": "",
   "license": "MIT",
