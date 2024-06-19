@@ -10,6 +10,7 @@ async function query(queryObject) {
   });
   await client.connect();
   const result = await client.query(queryObject);
+  // console.log(result);
   await client.end();
   return result;
 }

@@ -1,9 +1,16 @@
 import database from "infra/database.js";
 
 async function status(request, response) {
-  const result = await database.query("SELECT 1 + 1;");
-  console.log(result.rows);
-  response.status(200).json({ chave: "valor são acima" });
+  const updatedAt = new Date().toISOString();
+
+  var maxConnectionsQuery = new Object();
+  maxConnectionsQuery = await database.query("SHOW max_connections;");
+  const maxConnections = maxConnectionsQuery.rows[0].max_connections;
+
+  response.status(200).json({
+    updated_at: updatedAt,
+    max_connections: maxConnections,
+  });
 }
 
 export default status;
