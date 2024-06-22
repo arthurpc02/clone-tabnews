@@ -13,6 +13,8 @@ async function query(queryObject) {
     const result = await client.query(queryObject);
     // console.log(result);
     return result;
+  } catch (err) {
+    console.log(`Error during database query: ${err}`);
   } finally {
     await client.end();
   }
