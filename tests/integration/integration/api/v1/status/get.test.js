@@ -7,13 +7,14 @@ test("Get to /api/v1/status should return 200", async () => {
   const parsedUpdateAt = new Date(responseBody.updated_at).toISOString();
   expect(responseBody.updated_at).toBe(parsedUpdateAt);
 
-  const postgres_version = responseBody.database_stats.postgres_version;
+  const postgres_version = responseBody.dependencies.database.postgres_version;
   expect(postgres_version).toEqual("16.0");
 
-  const max_connections = responseBody.database_stats.max_connections;
+  const max_connections = responseBody.dependencies.database.max_connections;
   expect(max_connections).toBeDefined();
   expect(max_connections).not.toBe(null);
 
-  const active_connections = responseBody.database_stats.active_connections;
+  const active_connections =
+    responseBody.dependencies.database.active_connections;
   expect(active_connections).toEqual(1);
 });

@@ -23,10 +23,12 @@ async function status(request, response) {
 
   response.status(200).json({
     updated_at: updatedAt,
-    database_stats: {
-      postgres_version: postgresVersion,
-      max_connections: maxConnectionsNumber,
-      active_connections: activeConnectionsNumber,
+    dependencies: {
+      database: {
+        postgres_version: postgresVersion,
+        max_connections: maxConnectionsNumber,
+        active_connections: activeConnectionsNumber,
+      },
     },
   });
 }
