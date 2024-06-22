@@ -12,13 +12,12 @@ async function status(request, response) {
   const maxConnectionsValue = maxConnectionsQuery.rows[0].max_connections;
   const maxConnectionsNumber = parseInt(maxConnectionsValue);
 
+  const databaseName = process.env.POSTGRES_DB;
   var activeConnectionsQuery = new Object();
-  // activeConnectionsQuery = await database.query(
-  //   "SELECT COUNT(DISTINCT pid) FROM pg_stat_activity WHERE state='active';",
-  // );
-  activeConnectionsQuery = await database.query(
-    "SELECT count(*)::int FROM pg_stat_activity WHERE datname = 'local_db';",
-  );
+  activeConnectionsQuery = await database.query({
+    text: "SELECT count(*)::int FROM pg_stat_activity WHERE datname = $1;",
+    values: [databaseName],
+  });
   const activeConnectionsValue = activeConnectionsQuery.rows[0].count;
   const activeConnectionsNumber = parseInt(activeConnectionsValue);
 

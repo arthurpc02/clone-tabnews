@@ -15,6 +15,5 @@ test("Get to /api/v1/status should return 200", async () => {
   expect(max_connections).not.toBe(null);
 
   const active_connections = responseBody.database_stats.active_connections;
-  expect(active_connections).toBeDefined();
-  expect(active_connections).not.toBe(null);
+  expect(active_connections).toEqual(1);
 });
