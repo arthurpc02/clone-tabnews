@@ -9,20 +9,22 @@ async function status(request, response) {
 
   var maxConnectionsQuery = new Object();
   maxConnectionsQuery = await database.query("SHOW max_connections");
-  const maxConnections = maxConnectionsQuery.rows[0].max_connections;
+  const maxConnectionsValue = maxConnectionsQuery.rows[0].max_connections;
+  const maxConnectionsNumber = parseInt(maxConnectionsValue);
 
   var activeConnectionsQuery = new Object();
   activeConnectionsQuery = await database.query(
     "SELECT COUNT(DISTINCT pid) FROM pg_stat_activity WHERE state='active';",
   );
-  const activeConnections = activeConnectionsQuery.rows[0].count;
+  const activeConnectionsValue = activeConnectionsQuery.rows[0].count;
+  const activeConnectionsNumber = parseInt(activeConnectionsValue);
 
   response.status(200).json({
     updated_at: updatedAt,
     database_stats: {
       postgres_version: postgresVersion,
-      max_connections: maxConnections,
-      active_connections: activeConnections,
+      max_connections: maxConnectionsNumber,
+      active_connections: activeConnectionsNumber,
     },
   });
 }
