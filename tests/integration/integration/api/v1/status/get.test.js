@@ -19,7 +19,3 @@ test("Get to /api/v1/status should return 200", async () => {
   expect(active_connections).toBeDefined();
   expect(active_connections).not.toBe(null);
 });
-
-function isNumber(value) {
-  return typeof value === "number";
-}
