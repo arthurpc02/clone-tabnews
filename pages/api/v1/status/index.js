@@ -16,7 +16,6 @@ async function status(request, response) {
     "SELECT COUNT(DISTINCT pid) FROM pg_stat_activity WHERE state='active';",
   );
   const activeConnections = activeConnectionsQuery.rows[0].count;
-  // QUERY 2: SHOW server_version;
 
   response.status(200).json({
     updated_at: updatedAt,
