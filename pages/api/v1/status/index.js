@@ -13,8 +13,11 @@ async function status(request, response) {
   const maxConnectionsNumber = parseInt(maxConnectionsValue);
 
   var activeConnectionsQuery = new Object();
+  // activeConnectionsQuery = await database.query(
+  //   "SELECT COUNT(DISTINCT pid) FROM pg_stat_activity WHERE state='active';",
+  // );
   activeConnectionsQuery = await database.query(
-    "SELECT COUNT(DISTINCT pid) FROM pg_stat_activity WHERE state='active';",
+    "SELECT count(*)::int FROM pg_stat_activity WHERE datname = 'local_db';",
   );
   const activeConnectionsValue = activeConnectionsQuery.rows[0].count;
   const activeConnectionsNumber = parseInt(activeConnectionsValue);
