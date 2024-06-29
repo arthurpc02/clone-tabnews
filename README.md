@@ -1,3 +1,4 @@
 # clone-tabnews
+This is going to be my website: [https://tutunauta.com.br](url)
 
-Clone do TabNews, utilizado no curso.dev
+It's a clone of tabnews.com.br.
