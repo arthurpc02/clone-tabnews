@@ -12,6 +12,8 @@ async function query(queryObject) {
 
   console.log(client.connectionParameters);
 
+  console.log("node.env: %s", process.env.NODE_ENV);
+
   try {
     await client.connect();
     const result = await client.query(queryObject);
