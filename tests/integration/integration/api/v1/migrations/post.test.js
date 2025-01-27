@@ -7,6 +7,8 @@ async function cleanDatabase() {
 }
 
 test("Post to /api/v1/migrations should return 201", async () => {
+  console.log("Test desc.: Post to /api/v1/migrations should return 201");
+
   const response1 = await fetch("http://localhost:3000/api/v1/migrations", {
     method: "POST",
   });
