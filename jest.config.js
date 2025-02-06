@@ -12,6 +12,7 @@ const createJestConfig = nextJest({
 
 const jestConfig = createJestConfig({
   moduleDirectories: ["node_modules", "<rootDir>"],
+  testTimeout: 60000, // 60segundos
 });
 
 console.log("NODE_ENV = " + process.env.NODE_ENV);

@@ -1,5 +1,10 @@
 import database from "infra/database.js";
 
+import orchestrator from "tests/orchestrator.js"
+
+beforeAll(async()=>{
+  await orchestrator.waitForAllServices();
+});
 
 test("Post to /api/v1/migrations should return 201", async () => {
   console.log("Test desc.: Post to /api/v1/migrations with any method beside GET & POST should return 201");
