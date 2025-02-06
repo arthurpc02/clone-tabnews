@@ -13,6 +13,9 @@ async function waitForAllServices(){
       console.log(tryNumber);
       const response = await fetch("http://localhost:3000/api/v1/status");
       const responseBody = await response.json();
+      if (!response.ok){
+          throw Error();
+      }
     }
   }
 }
