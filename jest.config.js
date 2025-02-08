@@ -3,7 +3,7 @@ const nextJest = require("next/jest");
 const dotenv = require("dotenv");
 
 dotenv.config({
-  path: '.env.development'
+  path: ".env.development",
 });
 
 const createJestConfig = nextJest({
@@ -17,6 +17,5 @@ const jestConfig = createJestConfig({
 
 console.log("NODE_ENV = " + process.env.NODE_ENV);
 console.log("pg host = " + process.env.POSTGRES_HOST);
-
 
 module.exports = jestConfig;

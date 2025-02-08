@@ -1,8 +1,8 @@
-import orchestrator from "tests/orchestrator.js"
+import orchestrator from "tests/orchestrator.js";
 
-beforeAll(async()=>{
+beforeAll(async () => {
   await orchestrator.waitForAllServices();
-})
+});
 
 test("Get to /api/v1/status should return 200", async () => {
   console.log("Test desc.: Get to /api/v1/status should return 200");
