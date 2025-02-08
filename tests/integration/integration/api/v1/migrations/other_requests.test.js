@@ -1,13 +1,15 @@
 import database from "infra/database.js";
 
-import orchestrator from "tests/orchestrator.js"
+import orchestrator from "tests/orchestrator.js";
 
-beforeAll(async()=>{
+beforeAll(async () => {
   await orchestrator.waitForAllServices();
 });
 
 test("Post to /api/v1/migrations should return 201", async () => {
-  console.log("Test desc.: Post to /api/v1/migrations with any method beside GET & POST should return 201");
+  console.log(
+    "Test desc.: Post to /api/v1/migrations with any method beside GET & POST should return 201",
+  );
 
   const response1 = await fetch("http://localhost:3000/api/v1/migrations", {
     method: "DELETE",
