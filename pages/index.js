@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 function Home() {
   return (
     <main
@@ -12,10 +14,10 @@ function Home() {
       }}
     >
       <h1>*Me, creating the webpage*</h1>
-      <script
+      <Script
         src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"
         type="module"
-      ></script>
+      ></Script>
 
       <dotlottie-player
         src="https://lottie.host/026e2865-4ae8-441b-919a-b4147e9f7896/sV9R0R69qk.json"
