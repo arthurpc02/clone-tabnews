@@ -19,6 +19,9 @@
     "prepare": "husky",
     "commit": "cz"
   },
+  "engines": {
+    "node": "22.x"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
