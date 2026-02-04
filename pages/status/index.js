@@ -43,9 +43,9 @@ function DatabaseStatus() {
     refreshInterval: 2000,
   });
 
-  let postgres_version;
-  let max_connections;
-  let active_connections;
+  let postgres_version = "Carregando...";
+  let max_connections = "Carregando...";
+  let active_connections = "Carregando...";
 
   if (!isLoading && data) {
     postgres_version = data.dependencies.database.postgres_version;
