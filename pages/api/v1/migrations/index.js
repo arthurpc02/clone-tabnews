@@ -6,6 +6,7 @@ import { InternalServerError, MethodNotAllowedError } from "infra/errors.js";
 
 const router = createRouter();
 
+router.use(dbMiddleware);
 router.get(getHandler);
 router.post(postHandler);
 
@@ -29,12 +30,21 @@ function onErrorHandler(error, request, response) {
   response.status(500).json(publicErrorObject);
 }
 
-async function getHandler(request, response) {
-  let dbClient;
+async function dbMiddleware(request, response, next) {
+  const dbClient = await database.getNewClient();
+  request.dbClient = dbClient;
 
-  dbClient = await database.getNewClient();
+  try {
+    await next(); // run handlers
+  } finally {
+    // ALWAYS runs: success, throw, or early return
+    await dbClient.end();
+  }
+}
+
+async function getHandler(request, response) {
   const defaultMigrationOptions = {
-    dbClient: dbClient,
+    dbClient: request.dbClient,
     dryRun: true,
     dir: resolve("infra", "migrations"),
     direction: "up",
@@ -43,16 +53,13 @@ async function getHandler(request, response) {
   };
 
   const pendingMigrations = await migrationRunner(defaultMigrationOptions);
-  await dbClient.end();
+  await request.dbClient.end();
   return response.status(200).json(pendingMigrations);
 }
 
 async function postHandler(request, response) {
-  let dbClient;
-
-  dbClient = await database.getNewClient();
   const defaultMigrationOptions = {
-    dbClient: dbClient,
+    dbClient: request.dbClient,
     dryRun: true,
     dir: resolve("infra", "migrations"),
     direction: "up",
@@ -65,7 +72,7 @@ async function postHandler(request, response) {
     dryRun: false,
   });
 
-  await dbClient.end();
+  await request.dbClient.end();
 
   if (migratedMigrations.length > 0) {
     return response.status(201).json(migratedMigrations);
