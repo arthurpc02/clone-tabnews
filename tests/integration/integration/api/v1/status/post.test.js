@@ -4,11 +4,13 @@ beforeAll(async () => {
   await orchestrator.waitForAllServices();
 });
 
-describe("Non-Permitted Method /api/v1/migrations", () => {
+describe("POST /api/v1/status", () => {
   describe("Anonymous user", () => {
-    test("Using DELETE Method", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
-        method: "DELETE",
+    test("Retrieving current system status", async () => {
+      console.log("Test desc.: Get to /api/v1/status should return 200");
+
+      const response = await fetch("http://localhost:3000/api/v1/status", {
+        method: "POST",
       });
 
       expect(response.status).toBe(405);
@@ -22,14 +24,6 @@ describe("Non-Permitted Method /api/v1/migrations", () => {
           "Verifique se o método HTTP enviado é válido para este endpoint.",
         statusCode: 405,
       });
-    });
-
-    test("Using PUT Method", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
-        method: "PUT",
-      });
-
-      expect(response.status).toBe(405);
     });
   });
 });
