@@ -6,59 +6,53 @@ import controller from "infra/controller.js";
 
 const router = createRouter();
 
-router.use(dbMiddleware);
 router.get(getHandler);
 router.post(postHandler);
 
 export default router.handler(controller.errorHandlers);
 
-async function dbMiddleware(request, response, next) {
-  const dbClient = await database.getNewClient();
-  request.dbClient = dbClient;
+const defaultMigrationOptions = {
+  dryRun: true,
+  dir: resolve("infra", "migrations"),
+  direction: "up",
+  verbose: true,
+  migrationsTable: "pgmigrations",
+};
+
+async function getHandler(request, response) {
+  let dbClient;
 
   try {
-    await next(); // run handlers
+    dbClient = await database.getNewClient();
+
+    const pendingMigrations = await migrationRunner({
+      ...defaultMigrationOptions,
+      dbClient,
+    });
+    return response.status(200).json(pendingMigrations);
   } finally {
-    // ALWAYS runs: success, throw, or early return
     await dbClient.end();
   }
 }
 
-async function getHandler(request, response) {
-  const defaultMigrationOptions = {
-    dbClient: request.dbClient,
-    dryRun: true,
-    dir: resolve("infra", "migrations"),
-    direction: "up",
-    verbose: true,
-    migrationsTable: "pgmigrations",
-  };
-
-  const pendingMigrations = await migrationRunner(defaultMigrationOptions);
-  await request.dbClient.end();
-  return response.status(200).json(pendingMigrations);
-}
-
 async function postHandler(request, response) {
-  const defaultMigrationOptions = {
-    dbClient: request.dbClient,
-    dryRun: true,
-    dir: resolve("infra", "migrations"),
-    direction: "up",
-    verbose: true,
-    migrationsTable: "pgmigrations",
-  };
+  let dbClient;
 
-  const migratedMigrations = await migrationRunner({
-    ...defaultMigrationOptions,
-    dryRun: false,
-  });
+  try {
+    dbClient = await database.getNewClient();
 
-  await request.dbClient.end();
+    const migratedMigrations = await migrationRunner({
+      ...defaultMigrationOptions,
+      dbClient,
+      dryRun: false,
+    });
 
-  if (migratedMigrations.length > 0) {
-    return response.status(201).json(migratedMigrations);
+    if (migratedMigrations.length > 0) {
+      return response.status(201).json(migratedMigrations);
+    }
+
+    return response.status(200).json(migratedMigrations);
+  } finally {
+    await dbClient.end();
   }
-
-  return response.status(200).json(migratedMigrations);
 }
