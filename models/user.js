@@ -81,7 +81,7 @@ async function create(userInputValues) {
     }
   }
 
-  async function runInsertQuery(userInputValue) {
+  async function runInsertQuery(userInputValues) {
     const results = await database.query({
       text: `
             INSERT INTO
