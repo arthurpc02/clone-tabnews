@@ -16,6 +16,5 @@ const jestConfig = createJestConfig({
 });
 
 console.log("NODE_ENV = " + process.env.NODE_ENV);
-console.log("pg host = " + process.env.POSTGRES_HOST);
 
 module.exports = jestConfig;
