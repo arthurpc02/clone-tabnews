@@ -78,6 +78,22 @@ describe("PATCH /api/v1/user/[username]", () => {
         action: "Utilize outro username para realizar esta operação.",
         statusCode: 400,
       });
+
+      // testa se o usuário consegue alterar a case do seu nome
+      const responseCaseSensitive = await fetch(
+        "http://localhost:3000/api/v1/users/user2",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: "User2",
+          }),
+        },
+      );
+
+      expect(responseCaseSensitive.status).toBe(200); // ok
     });
 
     test("With duplicated 'email'", async () => {

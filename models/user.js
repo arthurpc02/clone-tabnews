@@ -71,7 +71,10 @@ async function update(username, userInputValues) {
   const currentUser = await findOneByUsername(username);
 
   if ("username" in userInputValues) {
-    await validateUniqueUsername(userInputValues.username);
+    if (username.toLowerCase() !== userInputValues.username.toLowerCase()) {
+      // para permitir o usuário trocar o case do seu username
+      await validateUniqueUsername(userInputValues.username);
+    }
   } else if ("email" in userInputValues) {
     await validateUniqueEmail(userInputValues.email);
   }
