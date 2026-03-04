@@ -27,7 +27,7 @@ describe("POST /api/v1/users", () => {
       expect(response.status).toBe(201); // created
 
       const responseBody = await response.json();
-      console.log("responseBody: ", responseBody);
+
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "artcorte",

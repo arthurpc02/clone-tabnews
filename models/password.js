@@ -30,7 +30,7 @@ function addPepper(password) {
 
 async function compare(providedPassword, storedPassword) {
   const providedPasswordWithPepper = addPepper(providedPassword);
-  console.log("ProvidedPassword with pepper:", providedPasswordWithPepper);
+  // console.log("ProvidedPassword with pepper:", providedPasswordWithPepper);
   return await bcryptjs.compare(providedPasswordWithPepper, storedPassword);
 }
 
