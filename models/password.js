@@ -4,7 +4,7 @@ async function hash(password) {
   const rounds = getNumberOfRounds();
 
   const passwordWithPepper = addPepper(password);
-  console.log("password with pepper:", passwordWithPepper);
+  // console.log("password with pepper:", passwordWithPepper);
   return await bcryptjs.hash(passwordWithPepper, rounds);
 }
 
