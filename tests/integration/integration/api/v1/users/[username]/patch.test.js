@@ -23,7 +23,6 @@ describe("PATCH /api/v1/user/[username]", () => {
 
       const responseBody = await response.json();
 
-      // console.log("responseBody: ", responseBody);
       expect(responseBody).toEqual({
         name: "NotFoundError",
         message: "O username informado não foi encontrado no sistema.",
