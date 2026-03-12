@@ -18,5 +18,7 @@ async function getHandler(request, response) {
 
   const userFound = await user.findOneById(sessionObject.user_id);
 
+  response.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
+
   return response.status(200).json(userFound);
 }
