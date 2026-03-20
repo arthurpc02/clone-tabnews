@@ -58,7 +58,27 @@ describe("Use case: Registration Flow (all successful)", () => {
     console.log(lastEmail.text);
   });
 
-  test("Activate account", async () => {});
+  test("Activate account", async () => {
+    // valendo!
+    /*
+    . pega o email
+    . extrai o token
+    . busca pelo token no DB
+    . compara user_id do db com user_id do teste
+    */
+    const lastEmail = await orchestrator.getLastEmail();
+
+    const receivedTokenId = activation.extractTokenFromEmail(lastEmail);
+    const tokenObjectFound = await activation.findOneValidById(receivedTokenId);
+
+    console.log(tokenObjectFound);
+
+    expect(tokenObjectFound.user_id).toEqual(createUserResponseBody.id);
+  });
+
   test("Login", async () => {});
   test("Get user information", async () => {});
+
+  // test mail without token
+  // test expired token
 });

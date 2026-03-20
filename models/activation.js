@@ -49,6 +49,40 @@ async function findOneByUserId(userId) {
   }
 }
 
+async function findOneValidById(id) {
+  const newToken = await runSelectQuery(id);
+
+  return newToken;
+  async function runSelectQuery(id) {
+    const results = await database.query({
+      text: `
+          SELECT
+            *
+          FROM
+            user_activation_tokens
+          WHERE
+            id = $1 and expires_at>NOW()
+          LIMIT
+            1
+        ;`,
+      values: [id],
+    });
+    return results.rows[0];
+  }
+}
+
+function extractTokenFromEmail(email) {
+  const re = /https*:\/\/.*cadastro\/ativar\/(.*)\s/;
+
+  const myArray = re.exec(email.text);
+  if (!myArray) {
+    throw new Error("No Token found on the Email");
+  } else {
+    const foundToken = myArray[1];
+    return foundToken;
+  }
+}
+
 async function sendEmailToUser(user, activationToken) {
   await email.send({
     from: "FinTab <contato@fintab.com.br>",
@@ -69,6 +103,8 @@ const activation = {
   create,
   sendEmailToUser,
   findOneByUserId,
+  extractTokenFromEmail,
+  findOneValidById,
 };
 
 export default activation;
