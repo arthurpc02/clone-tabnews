@@ -61,25 +61,15 @@ async function findOneValidById(id) {
           FROM
             user_activation_tokens
           WHERE
-            id = $1 and expires_at>NOW()
+            id = $1 
+            AND expires_at>NOW()
+            AND used_at IS NULL
           LIMIT
             1
         ;`,
       values: [id],
     });
     return results.rows[0];
-  }
-}
-
-function extractTokenFromEmail(email) {
-  const re = /https*:\/\/.*cadastro\/ativar\/(.*)\s/;
-
-  const myArray = re.exec(email.text);
-  if (!myArray) {
-    throw new Error("No Token found on the Email");
-  } else {
-    const foundToken = myArray[1];
-    return foundToken;
   }
 }
 
@@ -103,7 +93,6 @@ const activation = {
   create,
   sendEmailToUser,
   findOneByUserId,
-  extractTokenFromEmail,
   findOneValidById,
 };
 
