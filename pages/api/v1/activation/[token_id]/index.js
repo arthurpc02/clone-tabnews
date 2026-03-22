@@ -9,8 +9,8 @@ router.patch(patchHandler);
 export default router.handler(controller.errorHandlers);
 
 async function patchHandler(request, response) {
-  const tokenId = request.query.tokenId;
+  const tokenId = request.query.token_id;
 
-  const updatedUser = await activation.activate(tokenId);
-  return response.status(200).json({ updatedUser });
+  const updatedToken = await activation.activate(tokenId);
+  return response.status(200).json({ updatedToken });
 }

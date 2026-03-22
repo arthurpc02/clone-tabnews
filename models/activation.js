@@ -112,10 +112,15 @@ Equipe FinTab.
   });
 }
 
-async function markTokenAsUsed(tokenId) {
-  await runUpdateQuery(tokenId);
+async function activateUserByUserId(userId) {
+  const activatedUser = await user.setFeatures(userId, ["create:session"]);
+  return activatedUser;
+}
 
-  return;
+async function markTokenAsUsed(tokenId) {
+  const result = await runUpdateQuery(tokenId);
+
+  return result;
   async function runUpdateQuery(tokenId) {
     const results = await database.query({
       text: `
@@ -146,9 +151,9 @@ async function activate(tokenId) {
     throw new Error("Invalid Token");
   }
 
-  await markTokenAsUsed(tokenId);
-  const updatedUser = await user.activate(tokenObject.user_id);
-  return updatedUser;
+  const updatedToken = await markTokenAsUsed(tokenId);
+  await activation.activateUserByUserId(tokenObject.user_id);
+  return updatedToken;
 }
 
 const activation = {
@@ -158,6 +163,7 @@ const activation = {
   findOneValidById,
   findOneById,
   activate,
+  activateUserByUserId,
 };
 
 export default activation;

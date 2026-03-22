@@ -225,28 +225,23 @@ async function hashPasswordInObject(userInputValues) {
   userInputValues.password = hashedPassword;
 }
 
-async function activate(userId) {
-  // remove features "read:activation_token"
-  // and add feature: "create:session"
+async function setFeatures(userId, features) {
+  const updatedUser = await runUpdateQuery(userId, features);
+  return updatedUser;
 
-  const results = await runUpdateQuery(userId);
-  console.log(results);
-  return results;
-
-  async function runUpdateQuery(userId) {
+  async function runUpdateQuery(userId, features) {
     const results = await database.query({
       text: `
-      UPDATE users
+      UPDATE
+        users
       SET 
-        features = array_append(
-              array_remove(features, 'read:activation_token'),
-              'create:session'
-           ),
+        features = $2,
         updated_at = timezone('utc', now())
-      WHERE id = $1
+      WHERE
+       id = $1
       RETURNING *;
       ;`,
-      values: [userId],
+      values: [userId, features],
     });
 
     return results.rows[0];
@@ -259,7 +254,7 @@ const user = {
   findOneByEmail,
   create,
   update,
-  activate,
+  setFeatures,
 };
 
 export default user;

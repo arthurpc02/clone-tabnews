@@ -12,6 +12,7 @@ beforeAll(async () => {
 
 describe("Use case: Registration Flow (all successful)", () => {
   let createUserResponseBody;
+  let activationTokenId;
 
   test("Create user account", async () => {
     const createUserResponse = await fetch(
@@ -52,7 +53,7 @@ describe("Use case: Registration Flow (all successful)", () => {
     expect(lastEmail.subject).toBe("Ative seu cadastro no FinTab!");
     expect(lastEmail.text).toContain("RegistrationFlow");
 
-    const activationTokenId = orchestrator.extractUUID(lastEmail.text);
+    activationTokenId = orchestrator.extractUUID(lastEmail.text);
 
     expect(lastEmail.text).toContain(
       `${webserver.origin}/cadastro/ativar/${activationTokenId}`,
@@ -66,38 +67,20 @@ describe("Use case: Registration Flow (all successful)", () => {
   });
 
   test("Activate account", async () => {
-    // valendo!
-    /*
-    . pega o email
-    . extrai o token
-    . busca pelo token no DB
-    . compara user_id do db com user_id do teste
-    */
-    const lastEmail = await orchestrator.getLastEmail();
-
-    const receivedTokenId = orchestrator.extractUUID(lastEmail.text);
-    const tokenObjectFound = await activation.findOneValidById(receivedTokenId);
-
-    expect(tokenObjectFound.user_id).toEqual(createUserResponseBody.id);
-
     const response = await fetch(
-      `http://localhost:3000/api/v1/activation/${tokenObjectFound.id}`,
+      `http://localhost:3000/api/v1/activation/${activationTokenId}`,
       {
         method: "PATCH",
       },
     );
     expect(response.status).toBe(200);
-    const responseBody = response.json();
+    const responseBodyActivationToken = await response.json();
+
+    expect(responseBodyActivationToken.used_at).not.toBeNaN();
 
     // consulta user no DB e checa as features
-    const updatedUser = await user.findOneById(tokenObjectFound.user_id);
-
+    const updatedUser = await user.findOneByUsername("RegistrationFlow");
     expect(updatedUser.features).toEqual(["create:session"]);
-
-    // consulta token no DB e checa used_at
-    const updatedToken = await activation.findOneById(tokenObjectFound.id);
-
-    expect(updatedToken.used_at).not.toBeNaN();
   });
 
   test("Login", async () => {});
