@@ -1,6 +1,7 @@
 import email from "infra/email.js";
 import database from "infra/database.js";
 import webserver from "infra/webserver.js";
+import user from "models/user.js";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 Minutos
 
@@ -73,6 +74,28 @@ async function findOneValidById(id) {
   }
 }
 
+async function findOneById(id) {
+  const newToken = await runSelectQuery(id);
+
+  return newToken;
+  async function runSelectQuery(id) {
+    const results = await database.query({
+      text: `
+          SELECT
+            *
+          FROM
+            user_activation_tokens
+          WHERE
+            id = $1 
+          LIMIT
+            1
+        ;`,
+      values: [id],
+    });
+    return results.rows[0];
+  }
+}
+
 async function sendEmailToUser(user, activationToken) {
   await email.send({
     from: "FinTab <contato@fintab.com.br>",
@@ -89,11 +112,52 @@ Equipe FinTab.
   });
 }
 
+async function markTokenAsUsed(tokenId) {
+  await runUpdateQuery(tokenId);
+
+  return;
+  async function runUpdateQuery(tokenId) {
+    const results = await database.query({
+      text: `
+      UPDATE
+        user_activation_tokens
+      SET
+        used_at = NOW()
+      WHERE
+        id = $1
+      RETURNING
+        *
+      ;`,
+      values: [tokenId],
+    });
+
+    if (!results.rows[0]) {
+      throw new Error("no token found");
+    }
+
+    return results.rows[0];
+  }
+}
+
+async function activate(tokenId) {
+  const tokenObject = await findOneValidById(tokenId);
+
+  if (!tokenObject) {
+    throw new Error("Invalid Token");
+  }
+
+  await markTokenAsUsed(tokenId);
+  const updatedUser = await user.activate(tokenObject.user_id);
+  return updatedUser;
+}
+
 const activation = {
   create,
   sendEmailToUser,
   findOneByUserId,
   findOneValidById,
+  findOneById,
+  activate,
 };
 
 export default activation;

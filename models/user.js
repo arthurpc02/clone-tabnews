@@ -225,12 +225,41 @@ async function hashPasswordInObject(userInputValues) {
   userInputValues.password = hashedPassword;
 }
 
+async function activate(userId) {
+  // remove features "read:activation_token"
+  // and add feature: "create:session"
+
+  const results = await runUpdateQuery(userId);
+  console.log(results);
+  return results;
+
+  async function runUpdateQuery(userId) {
+    const results = await database.query({
+      text: `
+      UPDATE users
+      SET 
+        features = array_append(
+              array_remove(features, 'read:activation_token'),
+              'create:session'
+           ),
+        updated_at = timezone('utc', now())
+      WHERE id = $1
+      RETURNING *;
+      ;`,
+      values: [userId],
+    });
+
+    return results.rows[0];
+  }
+}
+
 const user = {
   findOneById,
   findOneByUsername,
   findOneByEmail,
   create,
   update,
+  activate,
 };
 
 export default user;

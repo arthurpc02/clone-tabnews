@@ -1,5 +1,6 @@
 import webserver from "infra/webserver";
 import activation from "models/activation";
+import user from "models/user";
 import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
@@ -78,6 +79,25 @@ describe("Use case: Registration Flow (all successful)", () => {
     const tokenObjectFound = await activation.findOneValidById(receivedTokenId);
 
     expect(tokenObjectFound.user_id).toEqual(createUserResponseBody.id);
+
+    const response = await fetch(
+      `http://localhost:3000/api/v1/activation/${tokenObjectFound.id}`,
+      {
+        method: "PATCH",
+      },
+    );
+    expect(response.status).toBe(200);
+    const responseBody = response.json();
+
+    // consulta user no DB e checa as features
+    const updatedUser = await user.findOneById(tokenObjectFound.user_id);
+
+    expect(updatedUser.features).toEqual(["create:session"]);
+
+    // consulta token no DB e checa used_at
+    const updatedToken = await activation.findOneById(tokenObjectFound.id);
+
+    expect(updatedToken.used_at).not.toBeNaN();
   });
 
   test("Login", async () => {});
