@@ -1,0 +1,32 @@
+{
+  "name": "clone-tabnews",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/arthurpc02/Workspaces/Repos/clone-tabnews-devcontainer,type=bind,consistency=cached",
+  "workspaceFolder": "/home/arthurpc02/Workspaces/Repos/clone-tabnews-devcontainer",
+  "remoteUser": "node",
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 5432],
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js"
+    },
+    "5432": {
+      "label": "PostgreSQL"
+    }
+  }
+}
