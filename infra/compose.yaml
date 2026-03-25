@@ -5,10 +5,10 @@ services:
     env_file:
       - ../.env.development
     ports:
-      - "${HOST_POSTGRES_PORT:-5432}:5432"
+      - "${HOST_POSTGRES_PORT:-65432}:5432"
   mailcatcher:
     container_name: "mailcatcher-dev"
     image: "sj26/mailcatcher"
     ports:
-      - "${HOST_MAIL_SMTP_PORT:-1025}:1025"
-      - "${HOST_MAIL_HTTP_PORT:-1080}:1080"
+      - "${HOST_MAIL_SMTP_PORT:-11025}:1025"
+      - "${HOST_MAIL_HTTP_PORT:-11080}:1080"

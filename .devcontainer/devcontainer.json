@@ -31,13 +31,13 @@
       ]
     }
   },
-  "forwardPorts": [3000, 65432, 11080],
+  "forwardPorts": [
+    3000,
+    11080
+  ],
   "portsAttributes": {
     "3000": {
       "label": "Next.js"
-    },
-    "65432": {
-      "label": "PostgreSQL"
     },
     "11080": {
       "label": "MailCatcher UI"
