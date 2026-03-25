@@ -28,4 +28,10 @@ The container mounts this project at:
 
 `/home/arthurpc02/Workspaces/Repos/clone-tabnews-devcontainer`
 
-This matches your requested workspace path and avoids installing Node.js/npm locally.
+To avoid collisions with services already running on your machine, the dev container remaps service ports on the host:
+
+- PostgreSQL: host `65432` -> container `5432`
+- MailCatcher SMTP: host `11025` -> container `1025`
+- MailCatcher UI: host `11080` -> container `1080`
+
+Inside the dev container, the app uses `host.docker.internal` to access those host ports automatically.

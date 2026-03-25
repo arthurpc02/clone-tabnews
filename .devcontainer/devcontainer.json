@@ -7,6 +7,17 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/arthurpc02/Workspaces/Repos/clone-tabnews-devcontainer,type=bind,consistency=cached",
   "workspaceFolder": "/home/arthurpc02/Workspaces/Repos/clone-tabnews-devcontainer",
   "remoteUser": "node",
+  "containerEnv": {
+    "POSTGRES_HOST": "host.docker.internal",
+    "POSTGRES_PORT": "65432",
+    "EMAIL_SMTP_HOST": "host.docker.internal",
+    "EMAIL_SMTP_PORT": "11025",
+    "EMAIL_HTTP_HOST": "host.docker.internal",
+    "EMAIL_HTTP_PORT": "11080",
+    "HOST_POSTGRES_PORT": "65432",
+    "HOST_MAIL_SMTP_PORT": "11025",
+    "HOST_MAIL_HTTP_PORT": "11080"
+  },
   "postCreateCommand": "npm install",
   "customizations": {
     "vscode": {
@@ -20,13 +31,16 @@
       ]
     }
   },
-  "forwardPorts": [3000, 5432],
+  "forwardPorts": [3000, 65432, 11080],
   "portsAttributes": {
     "3000": {
       "label": "Next.js"
     },
-    "5432": {
+    "65432": {
       "label": "PostgreSQL"
+    },
+    "11080": {
+      "label": "MailCatcher UI"
     }
   }
 }
