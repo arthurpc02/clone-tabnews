@@ -11,10 +11,12 @@ beforeAll(async () => {
 
 describe("GET /api/v1/user", () => {
   describe("Default user", () => {
-    test("With valid session", async () => {
+    test("With valid session and correct features", async () => {
       const createdUser = await orchestrator.createUser({
         username: "UserWithValidSession",
       });
+
+      orchestrator.activateUser(createdUser.id);
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
       const response = await fetch("http://localhost:3000/api/v1/user", {
@@ -29,15 +31,18 @@ describe("GET /api/v1/user", () => {
       expect(cacheControl).toBe("no-store, max-age=0, must-revalidate");
 
       const responseBody = await response.json();
-      expect(responseBody).toEqual({
+      expect(responseBody).toMatchObject({
         id: createdUser.id,
         username: "UserWithValidSession",
         email: createdUser.email,
         password: createdUser.password,
-        features: ["read:activation_token"],
+        features: ["create:session", "read:session"],
         created_at: createdUser.created_at.toISOString(),
-        updated_at: createdUser.updated_at.toISOString(),
       });
+
+      expect(new Date(responseBody.updated_at).getTime()).toBeGreaterThan(
+        createdUser.updated_at.getTime(),
+      );
 
       expect(uuidVersion(responseBody.id)).toBe(4);
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
@@ -47,7 +52,6 @@ describe("GET /api/v1/user", () => {
       const renewedSessionObject = await session.findOneValidByToken(
         sessionObject.token,
       );
-      console.log(renewedSessionObject);
 
       expect(
         renewedSessionObject.expires_at > sessionObject.expires_at,
@@ -70,6 +74,21 @@ describe("GET /api/v1/user", () => {
       });
     });
 
+    test("With valid session but no feature (banned or restricted)", async () => {
+      const createdUser = await orchestrator.createUser({
+        username: "BannedUserWithValidSession",
+      });
+
+      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const response = await fetch("http://localhost:3000/api/v1/user", {
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+      });
+
+      expect(response.status).toBe(403); // non-authorized
+    });
+
     test("With about to expire session", async () => {
       jest.useFakeTimers(
         new Date(Date.now() + 1000 - session.EXPIRATION_IN_MILLISECONDS),
@@ -78,6 +97,8 @@ describe("GET /api/v1/user", () => {
       const createdUser = await orchestrator.createUser({
         username: "UserWithAboutToExpireSession",
       });
+
+      const activatedUser = await orchestrator.activateUser(createdUser.id);
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
       const response = await fetch("http://localhost:3000/api/v1/user", {
@@ -94,10 +115,14 @@ describe("GET /api/v1/user", () => {
         username: "UserWithAboutToExpireSession",
         email: createdUser.email,
         password: createdUser.password,
-        features: ["read:activation_token"],
+        features: ["create:session", "read:session"],
         created_at: createdUser.created_at.toISOString(),
-        updated_at: createdUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString(),
       });
+
+      expect(new Date(responseBody.updated_at).getTime()).toBeGreaterThan(
+        createdUser.updated_at.getTime(),
+      );
 
       expect(uuidVersion(responseBody.id)).toBe(4);
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
@@ -107,7 +132,6 @@ describe("GET /api/v1/user", () => {
       const renewedSessionObject = await session.findOneValidByToken(
         sessionObject.token,
       );
-      console.log(renewedSessionObject);
 
       expect(
         renewedSessionObject.expires_at > sessionObject.expires_at,
