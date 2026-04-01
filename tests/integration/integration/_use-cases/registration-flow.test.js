@@ -119,6 +119,14 @@ describe("Use case: Registration Flow (all successful)", () => {
     expect(userResponseBody.id).toBe(createUserResponseBody.id);
   });
 
-  // test mail without token
-  // test expired token
+  test("already activated should fail", async () => {
+    const response = await fetch(
+      `http://localhost:3000/api/v1/activation/${activationTokenId}`,
+      {
+        method: "PATCH",
+      },
+    );
+
+    expect(response.status).toBe(403);
+  });
 });
