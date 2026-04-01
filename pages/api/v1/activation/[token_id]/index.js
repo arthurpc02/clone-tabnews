@@ -1,10 +1,11 @@
 import { createRouter } from "next-connect";
 import controller from "infra/controller.js";
-import activation from "models/activation";
+import activation from "models/activation.js";
 
 const router = createRouter();
 
-router.patch(patchHandler);
+router.use(controller.injectAnonymousOrUser);
+router.patch(controller.canRequest("read:activation_token"), patchHandler);
 
 export default router.handler(controller.errorHandlers);
 

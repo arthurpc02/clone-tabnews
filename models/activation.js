@@ -2,6 +2,7 @@ import email from "infra/email.js";
 import database from "infra/database.js";
 import webserver from "infra/webserver.js";
 import user from "models/user.js";
+import { ForbiddenError, ValidationError } from "infra/errors.js";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 Minutos
 
@@ -151,8 +152,13 @@ async function activate(tokenId) {
   const tokenObject = await findOneValidById(tokenId);
 
   if (!tokenObject) {
-    throw new Error("Invalid Token");
+    throw new ForbiddenError({
+      message: "Nenhum token válido encontrado.",
+      action: "O token já está expirado ou já foi utilizado.",
+    });
   }
+
+  console.log("found valid token");
 
   const updatedToken = await markTokenAsUsed(tokenId);
   await activation.activateUserByUserId(tokenObject.user_id);
