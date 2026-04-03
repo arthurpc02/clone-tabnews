@@ -13,5 +13,5 @@ async function patchHandler(request, response) {
   const tokenId = request.query.token_id;
 
   const updatedToken = await activation.activate(tokenId);
-  return response.status(200).json({ updatedToken });
+  return response.status(200).json(updatedToken);
 }

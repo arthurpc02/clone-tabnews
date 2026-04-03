@@ -11,7 +11,6 @@ import session from "models/session.js";
 import user from "models/user.js";
 import authorization from "models/authorization.js";
 
-
 function onNoMatchHandler(request, response) {
   const publicErrorObject = new MethodNotAllowedError();
   response.status(publicErrorObject.statusCode).json(publicErrorObject);
@@ -95,7 +94,7 @@ function canRequest(feature) {
   return function canRequestMiddleware(request, response, next) {
     const userTryingToRequest = request.context.user;
 
-    console.log("user:", userTryingToRequest);
+    // console.log("user:", userTryingToRequest);
 
     if (authorization.can(userTryingToRequest, feature)) {
       return next();
