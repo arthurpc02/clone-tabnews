@@ -127,6 +127,6 @@ describe("Use case: Registration Flow (all successful)", () => {
       },
     );
 
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(404); // Not Found
   });
 });

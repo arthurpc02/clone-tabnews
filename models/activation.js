@@ -2,7 +2,8 @@ import email from "infra/email.js";
 import database from "infra/database.js";
 import webserver from "infra/webserver.js";
 import user from "models/user.js";
-import { ForbiddenError, ValidationError } from "infra/errors.js";
+import { ForbiddenError, NotFoundError } from "infra/errors.js";
+import authorization from "models/authorization.js";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 Minutos
 
@@ -113,7 +114,33 @@ Equipe FinTab.
   });
 }
 
+async function activate(tokenId) {
+  const tokenObject = await findOneValidById(tokenId);
+
+  if (!tokenObject) {
+    throw new NotFoundError({
+      message: "Nenhum token válido encontrado.",
+      action: "Faça um novo cadastro.",
+    });
+  }
+
+  console.log("found valid token");
+
+  await activation.activateUserByUserId(tokenObject.user_id);
+  const updatedToken = await markTokenAsUsed(tokenId);
+  return updatedToken;
+}
+
 async function activateUserByUserId(userId) {
+  const userToActivate = await user.findOneById(userId);
+
+  if (!authorization.can(userToActivate, "read:activation_token")) {
+    throw new ForbiddenError({
+      message: "Você não pode mais utilizar token de ativação.",
+      action: "Entre em contato com o suporte.",
+    });
+  }
+
   const activatedUser = await user.setFeatures(userId, [
     "create:session",
     "read:session",
@@ -131,7 +158,8 @@ async function markTokenAsUsed(tokenId) {
       UPDATE
         user_activation_tokens
       SET
-        used_at = NOW()
+        used_at = NOW(),
+        updated_at = timezone('utc', now())
       WHERE
         id = $1
       RETURNING
@@ -148,23 +176,6 @@ async function markTokenAsUsed(tokenId) {
   }
 }
 
-async function activate(tokenId) {
-  const tokenObject = await findOneValidById(tokenId);
-
-  if (!tokenObject) {
-    throw new ForbiddenError({
-      message: "Nenhum token válido encontrado.",
-      action: "O token já está expirado ou já foi utilizado.",
-    });
-  }
-
-  console.log("found valid token");
-
-  const updatedToken = await markTokenAsUsed(tokenId);
-  await activation.activateUserByUserId(tokenObject.user_id);
-  return updatedToken;
-}
-
 const activation = {
   create,
   sendEmailToUser,
@@ -173,6 +184,7 @@ const activation = {
   findOneById,
   activate,
   activateUserByUserId,
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default activation;
