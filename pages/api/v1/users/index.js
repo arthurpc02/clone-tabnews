@@ -5,8 +5,8 @@ import user from "models/user.js";
 
 const router = createRouter();
 
-// router.get(getHandler);
-router.post(postHandler);
+router.use(controller.injectAnonymousOrUser);
+router.post(controller.canRequest("create:user"), postHandler);
 
 export default router.handler(controller.errorHandlers);
 
@@ -16,6 +16,8 @@ export default router.handler(controller.errorHandlers);
 
 async function postHandler(request, response) {
   const userInputValues = request.body;
+
+  console.log();
   const newUser = await user.create(userInputValues);
 
   const activationToken = await activation.create(newUser.id);
