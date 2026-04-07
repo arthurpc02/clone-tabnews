@@ -120,27 +120,79 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseCaseSensitive.status).toBe(200); // ok
     });
 
-    test("With duplicated 'email'", async () => {
-      const { username: username1 } = await orchestrator.createUser({
-        email: "email1@fakedomain.sth",
+    test("With `userB` targeting `userA`", async () => {
+      await orchestrator.createUser({
+        username: "userA",
       });
-      await orchestrator.createUser({});
 
-      const createdUser2 = await orchestrator.createUser({
-        email: "email2@fakedomain.sth",
+      const createdUserB = await orchestrator.createUser({
+        username: "userB",
       });
-      const activatedUser2 = await orchestrator.activateUser(createdUser2.id);
+      const activatedUserB = await orchestrator.activateUser(createdUserB.id);
       const sessionObject2 = await orchestrator.createSession(
-        activatedUser2.id,
+        activatedUserB.id,
       );
 
-      const response = await fetch(
-        `http://localhost:3000/api/v1/users/${username1}`,
+      const response = await fetch("http://localhost:3000/api/v1/users/userA", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${sessionObject2.token}`,
+        },
+        body: JSON.stringify({
+          username: "user3",
+        }),
+      });
+
+      expect(response.status).toBe(403); // forbidden
+
+      const responseBody = await response.json();
+      expect(responseBody).toEqual({
+        name: "ForbiddenError",
+        message: "Você não possui permissão para atualizar outro usuário.",
+        action:
+          "Verifique se você possui a feature necessária apra atualizar outro usuário.",
+        statusCode: 403,
+      });
+
+      // testa se o usuário consegue alterar a case do seu nome
+      const responseCaseSensitive = await fetch(
+        "http://localhost:3000/api/v1/users/userB",
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Cookie: `session_id=${sessionObject2.token}`,
+          },
+          body: JSON.stringify({
+            username: "UserB",
+          }),
+        },
+      );
+
+      expect(responseCaseSensitive.status).toBe(200); // ok
+    });
+
+    test("With duplicated 'email'", async () => {
+      const createdUser1 = await orchestrator.createUser({
+        email: "email1@fakedomain.sth",
+      });
+      const activatedUser1 = await orchestrator.activateUser(createdUser1.id);
+      const sessionObject1 = await orchestrator.createSession(
+        activatedUser1.id,
+      );
+
+      await orchestrator.createUser({
+        email: "email2@fakedomain.sth",
+      });
+
+      const response = await fetch(
+        `http://localhost:3000/api/v1/users/${createdUser1.username}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `session_id=${sessionObject1.token}`,
           },
           body: JSON.stringify({
             email: "email2@fakedomain.sth",
