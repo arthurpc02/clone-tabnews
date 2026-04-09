@@ -13,7 +13,7 @@ function Home() {
         overflowX: "hidden",
       }}
     >
-      <h1>*Me, creating the webpage*</h1>
+      <h1>*Me, creating this webpage*</h1>
       <Script
         src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"
         type="module"
@@ -27,6 +27,14 @@ function Home() {
         loop
         autoplay
       ></dotlottie-player>
+      <h3>
+        Meanwhile, please visit my{" "}
+        <a href="https://efficacious-archduke-256.notion.site/Tutunauta-com-br-185623b21d73421a94a4bee34f790149">
+          Notion page
+        </a>{" "}
+        or my <a href="https://www.linkedin.com/in/arthurpc02/">LinkedIn</a>.
+      </h3>
+      <h3></h3>
     </main>
   );
 }
