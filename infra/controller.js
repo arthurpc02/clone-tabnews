@@ -17,6 +17,7 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
+  // console.log("ERROR:", error);
   if (
     error instanceof ValidationError ||
     error instanceof NotFoundError ||
@@ -64,7 +65,7 @@ async function injectAnonymousOrUser(request, response, next) {
     return next();
   }
 
-  injectAnomymousUser(request);
+  injectAnonymousUser(request);
   return next();
 }
 
@@ -79,9 +80,14 @@ async function injectAuthenticatedUser(request) {
   };
 }
 
-async function injectAnomymousUser(request) {
+async function injectAnonymousUser(request) {
   const anonymousUserObject = {
-    features: ["read:activation_token", "create:session", "create:user"],
+    features: [
+      "read:activation_token",
+      "create:session",
+      "create:user",
+      "read:status",
+    ],
   };
 
   request.context = {

@@ -71,6 +71,31 @@ function filterOutput(user, feature, resource) {
   if (feature === "read:migrations") {
     return resource;
   }
+
+  if (feature === "read:status") {
+    return {
+      updated_at: resource.updated_at,
+      dependencies: {
+        database: {
+          max_connections: resource.dependencies.database.max_connections,
+          active_connections: resource.dependencies.database.active_connections,
+        },
+      },
+    };
+  }
+
+  if (feature === "read:status:adm") {
+    return {
+      updated_at: resource.updated_at,
+      dependencies: {
+        database: {
+          postgres_version: resource.dependencies.database.postgres_version,
+          max_connections: resource.dependencies.database.max_connections,
+          active_connections: resource.dependencies.database.active_connections,
+        },
+      },
+    };
+  }
 }
 
 const authorization = {
