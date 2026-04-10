@@ -27,7 +27,7 @@ describe("PATCH /api/v1/user/[username]", () => {
         },
       );
 
-      expect(response.status).toBe(403); // ok
+      expect(response.status).toBe(403); // forbidden
 
       const responseBody = await response.json();
 
@@ -151,7 +151,7 @@ describe("PATCH /api/v1/user/[username]", () => {
         name: "ForbiddenError",
         message: "Você não possui permissão para atualizar outro usuário.",
         action:
-          "Verifique se você possui a feature necessária apra atualizar outro usuário.",
+          "Verifique se você possui a feature necessária para atualizar outro usuário.",
         statusCode: 403,
       });
 
@@ -237,8 +237,6 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "uniqueUser2",
-        email: createdUser.email,
-        password: responseBody.password,
         features: ["create:session", "read:session", "update:user"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
@@ -277,8 +275,6 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: createdUser.username,
-        email: "uniqueEmail2@fakedomain.sth",
-        password: responseBody.password,
         features: ["create:session", "read:session", "update:user"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
@@ -317,8 +313,6 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: createdUser.username,
-        email: createdUser.email,
-        password: responseBody.password,
         features: ["create:session", "read:session", "update:user"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
@@ -385,8 +379,6 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         id: defaultUser.id,
         username: "alteradoPorAdm",
-        email: defaultUser.email,
-        password: responseBody.password,
         features: defaultUser.features,
         created_at: defaultUser.created_at.toISOString(),
         updated_at: responseBody.updated_at,
