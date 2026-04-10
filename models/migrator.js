@@ -57,8 +57,34 @@ async function runPendingMigrations() {
   }
 }
 
+async function runNMigrations(count) {
+  let dbClient;
+
+  try {
+    dbClient = await database.getNewClient();
+
+    const migratedMigrations = await migrationRunner({
+      ...defaultMigrationOptions,
+      dbClient,
+      dryRun: false,
+      count,
+    });
+
+    return migratedMigrations;
+  } catch (error) {
+    const serviceErrorObject = new ServiceError({
+      message: "Erro ao rodar migrations.",
+      cause: error,
+    });
+    throw serviceErrorObject;
+  } finally {
+    await dbClient?.end();
+  }
+}
+
 const migrator = {
   listPendingMigrations,
   runPendingMigrations,
+  runNMigrations,
 };
 export default migrator;

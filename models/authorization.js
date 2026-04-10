@@ -67,6 +67,10 @@ function filterOutput(user, feature, resource) {
       used_at: resource.used_at,
     };
   }
+
+  if (feature === "read:migrations") {
+    return resource;
+  }
 }
 
 const authorization = {
