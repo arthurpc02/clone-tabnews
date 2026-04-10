@@ -58,6 +58,10 @@ async function runPendingMigrations() {
   await migrator.runPendingMigrations();
 }
 
+async function runNMigrations(count) {
+  await migrator.runNMigrations(count);
+}
+
 async function createUser(userObject = {}) {
   return await user.create({
     username:
@@ -123,6 +127,7 @@ const orchestrator = {
   extractUUID,
   activateUser,
   addFeaturesToUser,
+  runNMigrations,
 };
 
 export default orchestrator;
