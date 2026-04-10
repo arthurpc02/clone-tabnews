@@ -2,6 +2,7 @@ import activation from "models/activation.js";
 import { createRouter } from "next-connect";
 import controller from "infra/controller.js";
 import user from "models/user.js";
+import authorization from "models/authorization.js";
 
 const router = createRouter();
 
@@ -10,12 +11,9 @@ router.post(controller.canRequest("create:user"), postHandler);
 
 export default router.handler(controller.errorHandlers);
 
-// async function getHandler(request, response) {
-//   return response.status(200).json({});
-// }
-
 async function postHandler(request, response) {
   const userInputValues = request.body;
+  const userTryingToPost = request.context.user;
 
   console.log();
   const newUser = await user.create(userInputValues);
@@ -23,5 +21,11 @@ async function postHandler(request, response) {
   const activationToken = await activation.create(newUser.id);
   await activation.sendEmailToUser(newUser, activationToken);
 
-  return response.status(201).json(newUser);
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToPost,
+    "read:user",
+    newUser,
+  );
+
+  return response.status(201).json(secureOutputValues);
 }

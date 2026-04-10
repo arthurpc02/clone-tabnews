@@ -38,10 +38,17 @@ async function patchHandler(request, response) {
     throw new ForbiddenError({
       message: "Você não possui permissão para atualizar outro usuário.",
       action:
-        "Verifique se você possui a feature necessária apra atualizar outro usuário.",
+        "Verifique se você possui a feature necessária para atualizar outro usuário.",
     });
   }
 
   const updatedUser = await user.update(username, userInputValues);
-  return response.status(200).json(updatedUser);
+
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToPatch,
+    "read:user",
+    updatedUser,
+  );
+
+  return response.status(200).json(secureOutputValues);
 }
