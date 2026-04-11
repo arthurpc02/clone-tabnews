@@ -6,7 +6,7 @@ import authorization from "models/authorization";
 const router = createRouter();
 
 router.use(controller.injectAnonymousOrUser);
-router.get(controller.canRequest("read:status"), getHandler);
+router.get(getHandler);
 
 export default router.handler(controller.errorHandlers);
 
@@ -33,7 +33,7 @@ async function getHandler(request, response) {
   const activeConnectionsValue = activeConnectionsQuery.rows[0].count;
   const activeConnectionsNumber = parseInt(activeConnectionsValue);
 
-  const StatusValues = {
+  const StatusObject = {
     updated_at: updatedAt,
     dependencies: {
       database: {
@@ -44,17 +44,10 @@ async function getHandler(request, response) {
     },
   };
 
-  let filterFeature = "read:status";
-  if (userTryingToGet.features.includes("read:status:adm")) {
-    filterFeature = "read:status:adm";
-  }
-
-  console.log("filterFeature=", filterFeature);
-
   const secureOutputValues = authorization.filterOutput(
     userTryingToGet,
-    filterFeature,
-    StatusValues,
+    "read:status",
+    StatusObject,
   );
 
   response.status(200).json(secureOutputValues);

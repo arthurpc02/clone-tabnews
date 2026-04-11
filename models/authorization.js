@@ -1,3 +1,5 @@
+import { LogOutput } from "concurrently";
+
 function can(user, feature, resource) {
   let authorized = false;
 
@@ -69,11 +71,17 @@ function filterOutput(user, feature, resource) {
   }
 
   if (feature === "read:migrations") {
-    return resource;
+    return resource.map((migration) => {
+      return {
+        path: migration.path,
+        name: migration.name,
+        timestamp: migration.timestamp,
+      };
+    });
   }
 
   if (feature === "read:status") {
-    return {
+    let filteredOutput = {
       updated_at: resource.updated_at,
       dependencies: {
         database: {
@@ -82,19 +90,13 @@ function filterOutput(user, feature, resource) {
         },
       },
     };
-  }
 
-  if (feature === "read:status:adm") {
-    return {
-      updated_at: resource.updated_at,
-      dependencies: {
-        database: {
-          postgres_version: resource.dependencies.database.postgres_version,
-          max_connections: resource.dependencies.database.max_connections,
-          active_connections: resource.dependencies.database.active_connections,
-        },
-      },
-    };
+    if (can(user, "read:status:all")) {
+      filteredOutput.dependencies.database.postgres_version =
+        resource.dependencies.database.postgres_version;
+    }
+
+    return filteredOutput;
   }
 }
 
