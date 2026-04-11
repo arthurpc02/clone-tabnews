@@ -237,12 +237,7 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "uniqueUser2",
-        features: [
-          "create:session",
-          "read:session",
-          "update:user",
-          "read:status",
-        ],
+        features: ["create:session", "read:session", "update:user"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -280,12 +275,7 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: createdUser.username,
-        features: [
-          "create:session",
-          "read:session",
-          "update:user",
-          "read:status",
-        ],
+        features: ["create:session", "read:session", "update:user"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -323,12 +313,7 @@ describe("PATCH /api/v1/user/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: createdUser.username,
-        features: [
-          "create:session",
-          "read:session",
-          "update:user",
-          "read:status",
-        ],
+        features: ["create:session", "read:session", "update:user"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });

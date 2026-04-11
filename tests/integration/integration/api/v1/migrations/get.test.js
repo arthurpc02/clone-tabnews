@@ -24,6 +24,35 @@ describe("GET /api/v1/migrations", () => {
     });
   });
 
+  describe("Default user", () => {
+    test("Retrieving pending migrations", async () => {
+      const DefaultUser = await orchestrator.createUser();
+      const activatedDefaultUser = await orchestrator.activateUser(
+        DefaultUser.id,
+      );
+
+      const DefaultUserSession = await orchestrator.createSession(
+        activatedDefaultUser.id,
+      );
+
+      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${DefaultUserSession.token}`,
+        },
+      });
+      expect(response.status).toBe(403);
+
+      const responseBody = await response.json();
+      expect(responseBody).toEqual({
+        name: "ForbiddenError",
+        message: "Você não possui permissão para executar esta ação.",
+        action: 'Verifique se o seu usuário possui a feature "read:migrations"',
+        statusCode: 403,
+      });
+    });
+  });
+
   describe("Privileged user", () => {
     test("Retrieving pending migrations", async () => {
       const privilegedUser = await orchestrator.createUser();

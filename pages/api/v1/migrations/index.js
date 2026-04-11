@@ -8,7 +8,7 @@ const router = createRouter();
 
 router.use(controller.injectAnonymousOrUser);
 router.get(controller.canRequest("read:migrations"), getHandler);
-router.post(controller.canRequest("run:migrations"), postHandler);
+router.post(controller.canRequest("create:migrations"), postHandler);
 
 export default router.handler(controller.errorHandlers);
 
