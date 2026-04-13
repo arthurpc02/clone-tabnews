@@ -1,6 +1,6 @@
 # clone-tabnews
 
-This is going to be my website: [https://tutunauta.com.br](https://tutunauta.com.br)
+This is going to be my website: [https://tututech.com.br](https://tututech.com.br)
 
 alternative domain: [https://clone-tabnews-rust-three.vercel.app/](https://clone-tabnews-rust-three.vercel.app/)
 
