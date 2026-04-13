@@ -1,6 +1,31 @@
-import { LogOutput } from "concurrently";
+import { InternalServerError } from "infra/errors";
+
+const availableFeatures = [
+  // USER
+  "create:user",
+  "read:user",
+  "read:user:self",
+  "update:user",
+  "update:user:others",
+
+  //SESSION
+  "create:session",
+  "read:session",
+  "read:activation_token",
+
+  //MIGRATIONS
+  "create:migrations",
+  "read:migrations",
+
+  //STATUS
+  "read:status",
+  "read:status:all",
+];
 
 function can(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+
   let authorized = false;
 
   // console.log("can(): user features=", user.features);
@@ -22,6 +47,10 @@ function can(user, feature, resource) {
 }
 
 function filterOutput(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+  validateResource(resource);
+
   if (feature === "read:user") {
     // we should not output the E-Mail and password from users.
     return {
@@ -97,6 +126,31 @@ function filterOutput(user, feature, resource) {
     }
 
     return filteredOutput;
+  }
+}
+
+function validateUser(user) {
+  if (!user || !user.features) {
+    throw new InternalServerError({
+      cause: "É necessário fornecer `user` no model `authorization`.",
+    });
+  }
+}
+
+function validateFeature(feature) {
+  if (!feature || !availableFeatures.includes(feature)) {
+    throw new InternalServerError({
+      cause: `É necessário fornecer uma "feature" conhecida no model "authorization". Feature fornecida: ${feature}.`,
+    });
+  }
+}
+
+function validateResource(resource) {
+  if (!resource) {
+    throw new InternalServerError({
+      cause:
+        "É necessário fornecer uma `resource` em authorization.setFilterOutput.",
+    });
   }
 }
 
