@@ -15,7 +15,7 @@ async function postHandler(request, response) {
   const userInputValues = request.body;
   const userTryingToPost = request.context.user;
 
-  console.log();
+  console.log(userTryingToPost);
   const newUser = await user.create(userInputValues);
 
   const activationToken = await activation.create(newUser.id);
