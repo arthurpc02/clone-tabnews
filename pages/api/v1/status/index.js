@@ -12,7 +12,6 @@ export default router.handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const userTryingToGet = request.context.user;
-  console.log(userTryingToGet);
   const updatedAt = new Date().toISOString();
 
   var postgresVersionQuery = new Object();

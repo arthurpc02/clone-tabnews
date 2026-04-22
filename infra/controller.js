@@ -17,7 +17,7 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
-  // console.log("ERROR:", error);
+  // console.log("unhandled ERROR:", error);
   if (
     error instanceof ValidationError ||
     error instanceof NotFoundError ||
@@ -32,6 +32,7 @@ function onErrorHandler(error, request, response) {
   const publicErrorObject = new InternalServerError({
     cause: error,
   });
+  console.error(publicErrorObject);
   response.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
