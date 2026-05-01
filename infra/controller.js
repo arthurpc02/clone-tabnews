@@ -17,7 +17,7 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
-  // console.log("unhandled ERROR:", error);
+  console.log("unhandled ERROR:", error);
   if (
     error instanceof ValidationError ||
     error instanceof NotFoundError ||
