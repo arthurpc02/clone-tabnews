@@ -100,16 +100,16 @@ async function findOneById(id) {
 
 async function sendEmailToUser(user, activationToken) {
   await email.send({
-    from: "FinTab <contato@fintab.com.br>",
+    from: "TutuTech <contato@notifications.tututech.com.br>",
     to: user.email,
-    subject: "Ative seu cadastro no FinTab!",
-    text: `${user.username}, clique no link abaixo para ativar seu cadastro no FinTab:
+    subject: "Ative seu cadastro no TutuTech.com.br!",
+    text: `${user.username}, clique no link abaixo para ativar seu cadastro no TutuTech.com.br:
     
 ${webserver.origin}/cadastro/ativar/${activationToken.id}
 
 Atenciosamente,
 
-Equipe FinTab.
+Equipe TutuTech.
     `,
   });
 }
