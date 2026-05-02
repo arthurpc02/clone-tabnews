@@ -43,12 +43,12 @@ function DatabaseStatus() {
     refreshInterval: 2000,
   });
 
-  let postgres_version = "Carregando...";
+  // let postgres_version = "Carregando...";
   let max_connections = "Carregando...";
   let active_connections = "Carregando...";
 
   if (!isLoading && data) {
-    postgres_version = data.dependencies.database.postgres_version;
+    // postgres_version = data.dependencies.database.postgres_version;
     max_connections = data.dependencies.database.max_connections;
     active_connections = data.dependencies.database.active_connections;
   }
@@ -57,10 +57,10 @@ function DatabaseStatus() {
     <div>
       <h2>Database Status</h2>
       <ul>
-        <li>
+        {/* <li>
           Postgres version:
           <span className={styles.highlight}>{postgres_version}</span>
-        </li>
+        </li> */}
         <li>
           Limite de conexões:
           <span class={styles.highlight}>{max_connections}</span>
