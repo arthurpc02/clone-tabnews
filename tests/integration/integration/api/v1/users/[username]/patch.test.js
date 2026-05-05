@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 describe("PATCH /api/v1/user/[username]", () => {
   describe("Anonymous user", () => {
-    test("With unique 'username'", async () => {
+    test("With unique `username`", async () => {
       const createdUser = await orchestrator.createUser({});
 
       const response = await fetch(
@@ -41,7 +41,7 @@ describe("PATCH /api/v1/user/[username]", () => {
   });
 
   describe("Default user", () => {
-    test("With nonexistent 'username'", async () => {
+    test("With nonexistent `username`", async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser.id);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
@@ -68,7 +68,7 @@ describe("PATCH /api/v1/user/[username]", () => {
       });
     });
 
-    test("With duplicated 'username'", async () => {
+    test("With duplicated `username`", async () => {
       await orchestrator.createUser({
         username: "user1",
       });
@@ -211,7 +211,7 @@ describe("PATCH /api/v1/user/[username]", () => {
       });
     });
 
-    test("With unique 'username'", async () => {
+    test("With unique `username`", async () => {
       const createdUser = await orchestrator.createUser({});
       const activatedUser = await orchestrator.activateUser(createdUser.id);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
