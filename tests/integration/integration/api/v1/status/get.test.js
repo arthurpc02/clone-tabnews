@@ -1,4 +1,5 @@
 import orchestrator from "tests/orchestrator.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -9,7 +10,7 @@ describe("GET /api/v1/status", () => {
     test("Retrieving current system status", async () => {
       console.log("Test desc.: Get to /api/v1/status should return 200");
 
-      const response = await fetch("http://localhost:3000/api/v1/status");
+      const response = await fetch(`${webserver.origin}/api/v1/status`);
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
@@ -41,7 +42,7 @@ describe("GET /api/v1/status", () => {
         activatedDefaultUser.id,
       );
 
-      const response = await fetch("http://localhost:3000/api/v1/status", {
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           "Content-Type": "application/json",
           Cookie: `session_id=${DefaultUserSession.token}`,
@@ -80,7 +81,7 @@ describe("GET /api/v1/status", () => {
         activatedPrivilegedUser.id,
       );
 
-      const response = await fetch("http://localhost:3000/api/v1/status", {
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           "Content-Type": "application/json",
           Cookie: `session_id=${privilegedUserSession.token}`,

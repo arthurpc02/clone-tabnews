@@ -2,6 +2,7 @@ import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/orchestrator.js";
 import user from "models/user.js";
 import password from "models/password.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -47,7 +48,7 @@ describe("PATCH /api/v1/user/[username]", () => {
       const sessionObject = await orchestrator.createSession(activatedUser.id);
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/usuarioInexistente",
+        `${webserver.origin}/api/v1/users/usuarioInexistente`,
         {
           method: "PATCH",
           headers: {
@@ -81,7 +82,7 @@ describe("PATCH /api/v1/user/[username]", () => {
         activatedUser2.id,
       );
 
-      const response = await fetch("http://localhost:3000/api/v1/users/user2", {
+      const response = await fetch(`${webserver.origin}/api/v1/users/user2`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +105,7 @@ describe("PATCH /api/v1/user/[username]", () => {
 
       // testa se o usuário consegue alterar a case do seu nome
       const responseCaseSensitive = await fetch(
-        "http://localhost:3000/api/v1/users/user2",
+        `${webserver.origin}/api/v1/users/user2`,
         {
           method: "PATCH",
           headers: {
@@ -133,7 +134,7 @@ describe("PATCH /api/v1/user/[username]", () => {
         activatedUserB.id,
       );
 
-      const response = await fetch("http://localhost:3000/api/v1/users/userA", {
+      const response = await fetch(`${webserver.origin}/api/v1/users/userA`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -157,7 +158,7 @@ describe("PATCH /api/v1/user/[username]", () => {
 
       // testa se o usuário consegue alterar a case do seu nome
       const responseCaseSensitive = await fetch(
-        "http://localhost:3000/api/v1/users/userB",
+        `${webserver.origin}/api/v1/users/userB`,
         {
           method: "PATCH",
           headers: {

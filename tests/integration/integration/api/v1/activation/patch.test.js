@@ -2,6 +2,7 @@ import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/orchestrator.js";
 import activation from "models/activation.js";
 import user from "models/user.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -13,7 +14,7 @@ describe("PATCH /api/v1/activation/[token_id]", () => {
   describe("Anonymous user", () => {
     test("With nonexistent token", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/activation/85832732-7968-4c5e-b4d8-b740c68474d2",
+        `${webserver.origin}/api/v1/activation/85832732-7968-4c5e-b4d8-b740c68474d2`,
         {
           method: "PATCH",
         },

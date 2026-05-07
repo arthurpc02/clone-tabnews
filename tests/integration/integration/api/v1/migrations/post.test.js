@@ -1,4 +1,5 @@
 import orchestrator from "tests/orchestrator.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -8,7 +9,7 @@ beforeAll(async () => {
 describe("POST /api/v1/migrations", () => {
   describe("Anonymous user", () => {
     test("Running pending migrations", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         method: "POST",
       });
       expect(response.status).toBe(403);
@@ -37,7 +38,7 @@ describe("POST /api/v1/migrations", () => {
         activatedDefaultUser.id,
       );
 
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +79,7 @@ describe("POST /api/v1/migrations", () => {
         );
 
         const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
+          `${webserver.origin}/api/v1/migrations`,
           {
             method: "POST",
             headers: {
@@ -100,7 +101,7 @@ describe("POST /api/v1/migrations", () => {
         // another post, this time we don't expect the migrations to excute because they
         // were already executed in response1.
         const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
+          `${webserver.origin}/api/v1/migrations`,
           {
             method: "POST",
             headers: {
