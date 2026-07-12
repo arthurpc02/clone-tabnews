@@ -72,8 +72,8 @@ async function createUser(userObject = {}) {
   });
 }
 
-async function activateUser(userId) {
-  const activatedUser = await activation.activateUserByUserId(userId);
+async function activateUser(userObject) {
+  const activatedUser = await activation.activateUserByUserId(userObject.id);
   return activatedUser;
 }
 

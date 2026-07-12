@@ -30,9 +30,7 @@ describe("POST /api/v1/migrations", () => {
       await orchestrator.runNMigrations(3); // orchestrator has to run the first migrations, to create the USERS and FEATURES.
 
       const DefaultUser = await orchestrator.createUser();
-      const activatedDefaultUser = await orchestrator.activateUser(
-        DefaultUser.id,
-      );
+      const activatedDefaultUser = await orchestrator.activateUser(DefaultUser);
 
       const DefaultUserSession =
         await orchestrator.createSession(activatedDefaultUser);
@@ -65,9 +63,8 @@ describe("POST /api/v1/migrations", () => {
         // await orchestrator.runNMigrations(3); // migrations for USERS and FEATURES were run on the test for the Default User.
 
         const privilegedUser = await orchestrator.createUser();
-        const activatedPrivilegedUser = await orchestrator.activateUser(
-          privilegedUser.id,
-        );
+        const activatedPrivilegedUser =
+          await orchestrator.activateUser(privilegedUser);
 
         await orchestrator.addFeaturesToUser(privilegedUser, [
           "create:migrations",

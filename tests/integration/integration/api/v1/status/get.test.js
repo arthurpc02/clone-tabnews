@@ -34,9 +34,7 @@ describe("GET /api/v1/status", () => {
   describe("Default user", () => {
     test("Retrieving current system status", async () => {
       const DefaultUser = await orchestrator.createUser();
-      const activatedDefaultUser = await orchestrator.activateUser(
-        DefaultUser.id,
-      );
+      const activatedDefaultUser = await orchestrator.activateUser(DefaultUser);
 
       const DefaultUserSession =
         await orchestrator.createSession(activatedDefaultUser);
@@ -70,9 +68,8 @@ describe("GET /api/v1/status", () => {
   describe("Privileged user", () => {
     test("Retrieving current system status", async () => {
       const privilegedUser = await orchestrator.createUser();
-      const activatedPrivilegedUser = await orchestrator.activateUser(
-        privilegedUser.id,
-      );
+      const activatedPrivilegedUser =
+        await orchestrator.activateUser(privilegedUser);
 
       await orchestrator.addFeaturesToUser(privilegedUser, ["read:status:all"]);
 
