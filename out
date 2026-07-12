@@ -1,0 +1,4 @@
+
+> clone-tabnews@1.0.0 lint:eslint:check
+> eslint . --max-warnings 0
+

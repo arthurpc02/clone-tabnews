@@ -63,11 +63,13 @@ function DatabaseStatus() {
         </li> */}
         <li>
           Limite de conexões:
-          <span class={styles.highlight}>{max_connections}</span>
+          {/* Fixed: changed 'class' to 'className' */}
+          <span className={styles.highlight}>{max_connections}</span>
         </li>
         <li>
           Conexões ativas:
-          <span class={styles.highlight}>{active_connections}</span>
+          {/* Fixed: changed 'class' to 'className' */}
+          <span className={styles.highlight}>{active_connections}</span>
         </li>
       </ul>
     </div>
