@@ -1,4 +1,5 @@
 import orchestrator from "tests/orchestrator.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -11,7 +12,7 @@ describe("GET /api/v1/migrations", () => {
     test("Retrieving pending migrations", async () => {
       // console.log("Test desc.: Get to /api/v1/migrations should return 200");
 
-      const response = await fetch("http://localhost:3000/api/v1/migrations");
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`);
       expect(response.status).toBe(403);
 
       const responseBody = await response.json();
@@ -27,15 +28,12 @@ describe("GET /api/v1/migrations", () => {
   describe("Default user", () => {
     test("Retrieving pending migrations", async () => {
       const DefaultUser = await orchestrator.createUser();
-      const activatedDefaultUser = await orchestrator.activateUser(
-        DefaultUser.id,
-      );
+      const activatedDefaultUser = await orchestrator.activateUser(DefaultUser);
 
-      const DefaultUserSession = await orchestrator.createSession(
-        activatedDefaultUser.id,
-      );
+      const DefaultUserSession =
+        await orchestrator.createSession(activatedDefaultUser);
 
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
           "Content-Type": "application/json",
           Cookie: `session_id=${DefaultUserSession.token}`,
@@ -56,17 +54,16 @@ describe("GET /api/v1/migrations", () => {
   describe("Privileged user", () => {
     test("Retrieving pending migrations", async () => {
       const privilegedUser = await orchestrator.createUser();
-      const activatedPrivilegedUser = await orchestrator.activateUser(
-        privilegedUser.id,
-      );
+      const activatedPrivilegedUser =
+        await orchestrator.activateUser(privilegedUser);
 
       await orchestrator.addFeaturesToUser(privilegedUser, ["read:migrations"]);
 
       const privilegedUserSession = await orchestrator.createSession(
-        activatedPrivilegedUser.id,
+        activatedPrivilegedUser,
       );
 
-      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+      const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
           "Content-Type": "application/json",
           Cookie: `session_id=${privilegedUserSession.token}`,

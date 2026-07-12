@@ -11,6 +11,7 @@ import migrator from "models/migrator.js";
 import user from "models/user.js";
 import session from "models/session.js";
 import activation from "models/activation.js";
+import webserver from "infra/webserver.js";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
 
@@ -26,7 +27,7 @@ async function waitForAllServices() {
 
     async function fetchStatusPage(bail, tryNumber) {
       console.log("Waiting for the DB Service: ", tryNumber);
-      const response = await fetch("http://localhost:3000/api/v1/status");
+      const response = await fetch(`${webserver.origin}/api/v1/status`);
       await response.json();
       if (!response.ok) {
         throw Error();
@@ -71,13 +72,13 @@ async function createUser(userObject = {}) {
   });
 }
 
-async function activateUser(userId) {
-  const activatedUser = await activation.activateUserByUserId(userId);
+async function activateUser(userObject) {
+  const activatedUser = await activation.activateUserByUserId(userObject.id);
   return activatedUser;
 }
 
-async function createSession(userId) {
-  return await session.create(userId);
+async function createSession(userObject) {
+  return await session.create(userObject.id);
 }
 
 async function deleteAllEmails() {

@@ -1,7 +1,10 @@
 import orchestrator from "tests/orchestrator.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+  await orchestrator.runPendingMigrations();
 });
 
 describe("GET /api/v1/status", () => {
@@ -9,7 +12,7 @@ describe("GET /api/v1/status", () => {
     test("Retrieving current system status", async () => {
       console.log("Test desc.: Get to /api/v1/status should return 200");
 
-      const response = await fetch("http://localhost:3000/api/v1/status");
+      const response = await fetch(`${webserver.origin}/api/v1/status`);
       expect(response.status).toBe(200);
 
       const responseBody = await response.json();
@@ -33,15 +36,12 @@ describe("GET /api/v1/status", () => {
   describe("Default user", () => {
     test("Retrieving current system status", async () => {
       const DefaultUser = await orchestrator.createUser();
-      const activatedDefaultUser = await orchestrator.activateUser(
-        DefaultUser.id,
-      );
+      const activatedDefaultUser = await orchestrator.activateUser(DefaultUser);
 
-      const DefaultUserSession = await orchestrator.createSession(
-        activatedDefaultUser.id,
-      );
+      const DefaultUserSession =
+        await orchestrator.createSession(activatedDefaultUser);
 
-      const response = await fetch("http://localhost:3000/api/v1/status", {
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           "Content-Type": "application/json",
           Cookie: `session_id=${DefaultUserSession.token}`,
@@ -70,17 +70,16 @@ describe("GET /api/v1/status", () => {
   describe("Privileged user", () => {
     test("Retrieving current system status", async () => {
       const privilegedUser = await orchestrator.createUser();
-      const activatedPrivilegedUser = await orchestrator.activateUser(
-        privilegedUser.id,
-      );
+      const activatedPrivilegedUser =
+        await orchestrator.activateUser(privilegedUser);
 
       await orchestrator.addFeaturesToUser(privilegedUser, ["read:status:all"]);
 
       const privilegedUserSession = await orchestrator.createSession(
-        activatedPrivilegedUser.id,
+        activatedPrivilegedUser,
       );
 
-      const response = await fetch("http://localhost:3000/api/v1/status", {
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           "Content-Type": "application/json",
           Cookie: `session_id=${privilegedUserSession.token}`,

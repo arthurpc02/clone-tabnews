@@ -2,6 +2,7 @@ import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/orchestrator.js";
 import activation from "models/activation.js";
 import user from "models/user.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -13,7 +14,7 @@ describe("PATCH /api/v1/activation/[token_id]", () => {
   describe("Anonymous user", () => {
     test("With nonexistent token", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/activation/85832732-7968-4c5e-b4d8-b740c68474d2",
+        `${webserver.origin}/api/v1/activation/85832732-7968-4c5e-b4d8-b740c68474d2`,
         {
           method: "PATCH",
         },
@@ -133,7 +134,7 @@ describe("PATCH /api/v1/activation/[token_id]", () => {
     });
     test("With valid token, but already activated user", async () => {
       const createdUser = await orchestrator.createUser();
-      await orchestrator.activateUser(createdUser.id); // activate user
+      await orchestrator.activateUser(createdUser); // activate user
 
       const activationToken = await activation.create(createdUser.id); // but still create another token
 
@@ -160,8 +161,8 @@ describe("PATCH /api/v1/activation/[token_id]", () => {
   describe("Default user", () => {
     test("With valid token, but already logged in user", async () => {
       const user1 = await orchestrator.createUser();
-      await orchestrator.activateUser(user1.id);
-      const user1SessionObject = await orchestrator.createSession(user1.id);
+      await orchestrator.activateUser(user1);
+      const user1SessionObject = await orchestrator.createSession(user1);
 
       const user2 = await orchestrator.createUser();
       const user2ActivationToken = await activation.create(user2.id);
