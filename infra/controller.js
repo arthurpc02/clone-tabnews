@@ -42,6 +42,7 @@ function setSessionCookie(sessionToken, response) {
     maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
     secure: process.NODE_ENV === "production", // enables cookies withouth secure for the DEV and TEST environments
     httpOnly: true,
+    sameSite: "Lax",
   });
   response.setHeader("Set-Cookie", setCookie);
 }
