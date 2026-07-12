@@ -32,9 +32,8 @@ describe("GET /api/v1/migrations", () => {
         DefaultUser.id,
       );
 
-      const DefaultUserSession = await orchestrator.createSession(
-        activatedDefaultUser.id,
-      );
+      const DefaultUserSession =
+        await orchestrator.createSession(activatedDefaultUser);
 
       const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         headers: {
@@ -64,7 +63,7 @@ describe("GET /api/v1/migrations", () => {
       await orchestrator.addFeaturesToUser(privilegedUser, ["read:migrations"]);
 
       const privilegedUserSession = await orchestrator.createSession(
-        activatedPrivilegedUser.id,
+        activatedPrivilegedUser,
       );
 
       const response = await fetch(`${webserver.origin}/api/v1/migrations`, {

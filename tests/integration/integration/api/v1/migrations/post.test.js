@@ -34,9 +34,8 @@ describe("POST /api/v1/migrations", () => {
         DefaultUser.id,
       );
 
-      const DefaultUserSession = await orchestrator.createSession(
-        activatedDefaultUser.id,
-      );
+      const DefaultUserSession =
+        await orchestrator.createSession(activatedDefaultUser);
 
       const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
         method: "POST",
@@ -75,19 +74,16 @@ describe("POST /api/v1/migrations", () => {
         ]);
 
         privilegedUserSession = await orchestrator.createSession(
-          activatedPrivilegedUser.id,
+          activatedPrivilegedUser,
         );
 
-        const response1 = await fetch(
-          `${webserver.origin}/api/v1/migrations`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Cookie: `session_id=${privilegedUserSession.token}`,
-            },
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `session_id=${privilegedUserSession.token}`,
           },
-        );
+        });
         expect(response1.status).toBe(201); // created
 
         const response1Body = await response1.json();
@@ -100,16 +96,13 @@ describe("POST /api/v1/migrations", () => {
       test("For the second time", async () => {
         // another post, this time we don't expect the migrations to excute because they
         // were already executed in response1.
-        const response2 = await fetch(
-          `${webserver.origin}/api/v1/migrations`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Cookie: `session_id=${privilegedUserSession.token}`,
-            },
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `session_id=${privilegedUserSession.token}`,
           },
-        );
+        });
         expect(response2.status).toBe(200);
 
         const response2Body = await response2.json();
